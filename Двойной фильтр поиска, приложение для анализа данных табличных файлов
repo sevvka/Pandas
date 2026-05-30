@@ -1,0 +1,95 @@
+import pandas
+
+df = pandas.read_csv("Patients.csv")
+print(df.columns)
+dicto = {1: "name", 2: "age", 3: "etnicity", 4: "sex"}
+
+StopProg = False
+
+
+
+
+while not StopProg:
+    search = input("search by name - 1, by age - 2, by etnicity - 3, by sex - 4, 5 - end programm: ")
+    try:
+        search = int(search)
+    except ValueError:
+        print("only numbers are allowed")
+        continue
+    if search in range(1,5):
+        print(df[dicto[search]])
+    elif search == 5:
+        print("ending programm")
+        StopProg = True
+    else:
+        print("only given options are allowed")
+        continue
+    if StopProg == True:
+        break
+    while not StopProg:
+        dostupno = df[dicto[search]].unique()
+        print(f"доступные значения: {dostupno}")
+        Dsearch = input(f"more detailed search by {dicto[search]}: ")
+        if dicto[search] == "age":
+            try:
+                Dsearch = int(Dsearch)
+                print(Dsearch)
+            except ValueError:
+                print("Only numbers are allowed here")
+        else:
+            Dsearch = Dsearch.capitalize()
+            print(Dsearch)
+        if Dsearch in df[dicto[search]].values:
+            poisk = df[df[dicto[search]] == Dsearch]
+            print(poisk)
+            while not StopProg:
+                answr = input(f"do you need a more detailed search? in {dicto[search]} y/n: ")
+                if answr.lower() == "y":
+                    while not StopProg:
+                        filtertwo = input("second filter will be by name - 1, by age - 2, by etnicity - 3, by sex - 4, end programm - 5: ")
+                        print(poisk)
+                        try:
+                            filtertwo = int(filtertwo)
+                        except ValueError:
+                            print("Only numbers are allowed")
+                        if filtertwo in range(1, 5):
+                            dostupnoDeep = poisk[dicto[filtertwo]].unique()
+                            while not StopProg:
+                                Final = input(f"more detailed search by {dicto[filtertwo]} in {dicto[search]}: ")
+                                if dicto[filtertwo] == "age":
+                                    try:
+                                        Final = int(Final)
+                                        print(Final)
+                                    except ValueError:
+                                        print("Only numbers are allowed")
+                                else:
+                                    Final = Final.capitalize()
+                                    print(Final)
+                                if Final in dostupnoDeep:
+                                    poisko = df[(df[dicto[search]] == Dsearch) & (df[dicto[filtertwo]] == Final)]
+                                    print(poisko)
+                                    break
+                                else:
+                                    print("Data not found")
+                                    print(dostupnoDeep.values)
+                                    continue
+                        elif filtertwo == 5:
+                            print("ending programm")
+                            StopProg = True
+                        else: 
+                            print("only numbers from 1 to 5 are allowed")
+                            continue
+                elif answr.lower() == "n":
+                    quest = input("do you want to end programm or continue data search? 1 - end, 2 - continue: ")
+                    quest = int(quest)
+                    if quest == 1:
+                        StopProg = True
+                    elif quest == 2:
+                        print("continue")
+                    else:
+                        print("only given options are allowed")
+                else:
+                    print("only given options are allowed")
+        else:
+            print("data not found")
+            continue
